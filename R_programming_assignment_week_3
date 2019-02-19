@@ -1,0 +1,50 @@
+############Function test:
+
+#?solve
+#?mat
+
+##mm1 <- makeCacheMatrix(matrix(1:4, 2, 2))
+##cacheSolve(mm1)
+##mm2 <- makeCacheMatrix(matrix(1:9, 3, 3))
+##cacheSolve(mm2)
+#Error in solve.default(mat, ...) : 
+#    Lapack例行程序dgesv: 系统正好是奇异的: U[3,3] = 0 
+##mm3 <- makeCacheMatrix(matrix(c(2, 3, 2, 6, 7, 3, 9, 12, 34), 3, 3))
+##cacheSolve(mm3)
+
+
+
+##########Function code:
+#Function 1: To Cache the matrix we bulid.
+
+makeCacheMatrix <- function(x = matrix()) 
+    {
+    inverse <- NULL
+    set <- function(y) 
+        {
+        x <<- y
+        inverse <<- NULL
+        }
+    get <- function() x
+    setInverse <- function(inverse) inverse <<- inverse
+    getInverse <- function() inverse
+    list(set = set,
+         get = get,
+         setInverse = setInverse,
+         getInverse = getInverse)
+    }
+
+#function 2: Extract the Cached matrix and convert the matrix to an inverse matrix.
+cacheSolve <- function(x, ...) 
+    {
+    inverse <- x$getInverse()
+    if (!is.null(inverse)) 
+        {
+        message("getting cached data")
+        return(inverse)
+        }
+    mat <- x$get()
+    inverse <- solve(mat, ...) #key function to convert matrix to an inverse matrix
+    x$setInverse(inverse)
+    inverse
+    }
